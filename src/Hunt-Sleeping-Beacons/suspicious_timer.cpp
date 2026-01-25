@@ -82,7 +82,9 @@ namespace hsb::scanning {
 						break;
 
 					for (SUSPICIOUS_CALLBACK suspiciousCallback : suspicious_callbacks) {
-						if (suspiciousCallback.addr == ctx.FinalizationCallback) {
+						
+						if(ctx.FinalizationCallback >= (PBYTE)suspiciousCallback.addr - 8 && ctx.FinalizationCallback <= suspiciousCallback.addr) 
+						{
 
 							process_detection p;
 							p.name = L"Suspicious Timer";
@@ -231,6 +233,8 @@ namespace hsb::scanning {
 
 		if (hNtdll && hKernel32) {
 			suspicious_callbacks.push_back(make_callback(L"ntdll!NtContinue", GetProcAddress(hNtdll, "NtContinue")));
+			suspicious_callbacks.push_back(make_callback(L"ntdll!NtContinueEx", GetProcAddress(hNtdll, "NtContinueEx")));
+			suspicious_callbacks.push_back(make_callback(L"ntdll!KiUserApcDispatcher", GetProcAddress(hNtdll, "KiUserApcDispatcher")));
 			suspicious_callbacks.push_back(make_callback(L"ntdll!RtlCaptureContext", GetProcAddress(hNtdll, "RtlCaptureContext")));
 			suspicious_callbacks.push_back(make_callback(L"ntdll!RtlCopyMemory", GetProcAddress(hNtdll, "RtlCopyMemory")));
 			suspicious_callbacks.push_back(make_callback(L"ntdll!RtlMoveMemory", GetProcAddress(hNtdll, "RtlMoveMemory")));
